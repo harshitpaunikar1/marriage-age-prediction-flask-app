@@ -24,3 +24,7 @@
 
 - Task summary: Late-night fix: fixed the README section that was missing the setup step — embarrassing oversight.
 - Deliverable: Solid now, moving on.
+## 2022-05-11 - Day 3: Cleaning pass
+
+- Task summary: Spent another hour on this: fixed a type coercion issue that was causing silent NaN propagation downstream.
+- Deliverable: Pushed before end of day.
