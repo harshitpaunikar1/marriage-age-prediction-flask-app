@@ -20,3 +20,7 @@
 
 - Task summary: Quick follow-up: cleaned up the cell ordering in the notebook so it reads top to bottom without jumping around.
 - Deliverable: Good enough to not be embarrassing.
+## 2022-05-11 - Day 3: Cleaning pass
+
+- Task summary: Late-night fix: fixed the README section that was missing the setup step — embarrassing oversight.
+- Deliverable: Solid now, moving on.
