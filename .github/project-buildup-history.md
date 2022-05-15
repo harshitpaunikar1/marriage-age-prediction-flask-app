@@ -40,3 +40,7 @@
 
 - Task summary: After stepping away for a bit, came back and the variable names were inconsistent so cleaned those up across the notebook before calling it done.
 - Deliverable: One of those satisfying small wins.
+## 2022-05-15 - Day 5: Feature prep
+
+- Task summary: Checked in on the project over the weekend. Ran a few cells, noticed the output was slightly off. Fixed a small rounding issue and re-saved.
+- Deliverable: One of those satisfying small wins.
