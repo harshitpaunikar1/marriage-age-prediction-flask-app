@@ -52,3 +52,7 @@
 
 - Task summary: Late-night fix: pushed a config tweak after noticing the wrong default param was being used.
 - Deliverable: Small fix, clean result.
+## 2022-05-16 - Day 6: Baseline model
+
+- Task summary: Circled back: re-ran the plots with better axis labels and a more readable color palette.
+- Deliverable: Should've caught it earlier but better now than later.
