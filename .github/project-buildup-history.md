@@ -60,3 +60,7 @@
 
 - Task summary: Late-night fix: spent time just reading back through everything to make sure it still made sense end to end.
 - Deliverable: Cleaner than this morning's version.
+## 2022-05-16 - Day 6: Baseline model
+
+- Task summary: Quick follow-up: there was a subtle off-by-one error in the index slicing that was silently skewing results. Caught it and fixed it.
+- Deliverable: Pushed before end of day.
