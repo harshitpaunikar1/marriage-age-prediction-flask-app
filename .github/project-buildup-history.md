@@ -48,3 +48,7 @@
 
 - Task summary: By this point I had the rough direction, so the work became more practical. I spent most of the day trying to train a first model and record the basic evaluation metrics and make the whole thing feel less half baked. Once the base made some sense, I could finally move a bit faster and stop second guessing every tiny decision. I had to think about both the model side and the form side at the same time, which made the day a bit scattered.
 - Deliverable: I wrapped up the day with baseline results mostly in place. It was not perfect, but it was good enough to keep the project moving. There were still a couple of loose parts, but nothing serious enough to block the next step.
+## 2022-05-16 - Day 6: Baseline model
+
+- Task summary: Late-night fix: pushed a config tweak after noticing the wrong default param was being used.
+- Deliverable: Small fix, clean result.
