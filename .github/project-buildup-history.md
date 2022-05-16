@@ -44,3 +44,7 @@
 
 - Task summary: Checked in on the project over the weekend. Ran a few cells, noticed the output was slightly off. Fixed a small rounding issue and re-saved.
 - Deliverable: One of those satisfying small wins.
+## 2022-05-16 - Day 6: Baseline model
+
+- Task summary: By this point I had the rough direction, so the work became more practical. I spent most of the day trying to train a first model and record the basic evaluation metrics and make the whole thing feel less half baked. Once the base made some sense, I could finally move a bit faster and stop second guessing every tiny decision. I had to think about both the model side and the form side at the same time, which made the day a bit scattered.
+- Deliverable: I wrapped up the day with baseline results mostly in place. It was not perfect, but it was good enough to keep the project moving. There were still a couple of loose parts, but nothing serious enough to block the next step.
