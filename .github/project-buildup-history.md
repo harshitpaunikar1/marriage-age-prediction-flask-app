@@ -56,3 +56,7 @@
 
 - Task summary: Circled back: re-ran the plots with better axis labels and a more readable color palette.
 - Deliverable: Should've caught it earlier but better now than later.
+## 2022-05-16 - Day 6: Baseline model
+
+- Task summary: Late-night fix: spent time just reading back through everything to make sure it still made sense end to end.
+- Deliverable: Cleaner than this morning's version.
