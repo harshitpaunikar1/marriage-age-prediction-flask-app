@@ -84,3 +84,7 @@
 
 - Task summary: Came back after lunch and realized added inline comments in the dense sections — would have been confusing to revisit without them.
 - Deliverable: Wrapped it up properly this time.
+## 2022-05-20 - Day 10: Prediction wiring
+
+- Task summary: Circled back: re-ran the plots with better axis labels and a more readable color palette.
+- Deliverable: Nothing dramatic — just keeping things tidy.
