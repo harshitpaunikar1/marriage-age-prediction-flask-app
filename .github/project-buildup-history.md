@@ -80,3 +80,7 @@
 
 - Task summary: This was the middle stretch where the project started feeling real. I kept going and tried to connect form inputs to the model and show prediction results on the page, then cleaned up whatever looked confusing or weak from the earlier days. The middle part always takes longer than it should, mostly becuase one fix usually reveals two more things to clean up. Part of the effort went into making sure a normal person could use the page without needing extra explanation.
 - Deliverable: Ended the day with end-to-end prediction flow in hand, plus a few side notes on what still needed fixing later. It was not super polished, just stable enough that I felt okay moving forward.
+## 2022-05-20 - Day 10: Prediction wiring
+
+- Task summary: Came back after lunch and realized added inline comments in the dense sections — would have been confusing to revisit without them.
+- Deliverable: Wrapped it up properly this time.
