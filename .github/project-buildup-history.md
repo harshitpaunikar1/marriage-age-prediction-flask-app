@@ -88,3 +88,7 @@
 
 - Task summary: Circled back: re-ran the plots with better axis labels and a more readable color palette.
 - Deliverable: Nothing dramatic — just keeping things tidy.
+## 2022-05-22 - Day 10: Prediction wiring
+
+- Task summary: Sunday evening, couldn't leave the failing assert alone. Tracked it down to a missing sort step. Resolved.
+- Deliverable: Solid now, moving on.
