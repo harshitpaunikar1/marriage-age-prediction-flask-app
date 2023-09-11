@@ -12,3 +12,7 @@
 
 - Task summary: Fixed a potential path traversal issue in the model loading code — it was accepting the model filename from the request which was unnecessary and insecure. Hardcoded the model path.
 - Deliverable: Path traversal vulnerability in model loading fixed.
+## 2023-09-11 - Day 4: Input validation
+
+- Task summary: Added comprehensive input validation to the prediction endpoint. The model expects seven numeric inputs and was previously silently coercing or failing on bad inputs. Now returns a clear error message listing which fields are missing or out of expected range, and the API documentation in the README was updated to show the valid input schema.
+- Deliverable: Input validation added. Error messages describe which fields are invalid.
