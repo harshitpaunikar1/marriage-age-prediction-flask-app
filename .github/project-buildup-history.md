@@ -16,3 +16,7 @@
 
 - Task summary: Added comprehensive input validation to the prediction endpoint. The model expects seven numeric inputs and was previously silently coercing or failing on bad inputs. Now returns a clear error message listing which fields are missing or out of expected range, and the API documentation in the README was updated to show the valid input schema.
 - Deliverable: Input validation added. Error messages describe which fields are invalid.
+## 2023-11-13 - Day 6: Deployment prep
+
+- Task summary: Prepared the Marriage Age Prediction Flask app for deployment. Added a Dockerfile, wrote a docker-compose for local testing, and verified that the app starts cleanly in a container. Also ran a quick load test locally with a simple script to make sure it didn't fall over under simultaneous requests. The threading model needed to be set explicitly to avoid gunicorn worker timeout issues.
+- Deliverable: Docker setup complete. Load test passed. Gunicorn worker config corrected.
