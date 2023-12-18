@@ -20,3 +20,7 @@
 
 - Task summary: Prepared the Marriage Age Prediction Flask app for deployment. Added a Dockerfile, wrote a docker-compose for local testing, and verified that the app starts cleanly in a container. Also ran a quick load test locally with a simple script to make sure it didn't fall over under simultaneous requests. The threading model needed to be set explicitly to avoid gunicorn worker timeout issues.
 - Deliverable: Docker setup complete. Load test passed. Gunicorn worker config corrected.
+## 2023-12-18 - Day 7: Portfolio wrap
+
+- Task summary: Final pass on the Marriage Age Prediction Flask App. Went through the README and made sure the setup instructions were accurate from scratch — had to update the environment setup steps which had drifted from what actually works. Also added screenshots of the app UI to the README so it reads better as a portfolio piece.
+- Deliverable: README setup instructions verified and updated. UI screenshots added.
