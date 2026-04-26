@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>An Honest Retrofit: Cleaning Up a Rough ML Deployment</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* 
+      DESIGN SYSTEM: "Repaired Document"
+      Black and white only. Typography-driven.
+      Editorial strike bars, sharp section breaks.
+    */
+    :root {
+      --bg: #ffffff;
+      --text: #111111;
+      --rule-heavy: #111111;
+      --rule-light: #e8e8e8;
+      --strike: #888888;
+      --code-bg: #111111;
+      --code-text: #f5f5f5;
+      --serif: 'Libre Baskerville', serif;
+      --sans: 'IBM Plex Sans', sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--serif);
+      line-height: 1.7;
+      font-size: 18px;
+    }
+
+    /* Layout structure */
+    .document-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      border-left: 4px solid var(--rule-heavy);
+    }
+
+    /* Header */
+    header {
+      margin-bottom: 5rem;
+      position: relative;
+    }
+
+    .strike-bar {
+      height: 12px;
+      background: repeating-linear-gradient(
+        45deg,
+        var(--text),
+        var(--text) 2px,
+        transparent 2px,
+        transparent 8px
+      );
+      margin-bottom: 2rem;
+      width: 100%;
+    }
+
+    .eyebrow {
+      font-family: var(--sans);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.85rem;
+      color: var(--strike);
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .deck {
+      font-size: 1.25rem;
+      font-style: italic;
+      color: var(--text);
+      max-width: 80%;
+      border-left: 2px solid var(--strike);
+      padding-left: 1rem;
+    }
+
+    /* Body text */
+    p {
+      margin-bottom: 1.5rem;
+    }
+
+    p:first-of-type.drop-cap::first-letter {
+      font-size: 3.5rem;
+      float: left;
+      line-height: 1;
+      padding-right: 0.5rem;
+      font-weight: 700;
+    }
+
+    /* Corrective section headers */
+    h2 {
+      font-family: var(--sans);
+      font-size: 1.15rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--rule-heavy);
+      display: inline-block;
+      width: 100%;
+    }
+
+    h2::before {
+      content: "SECTION // ";
+      color: var(--strike);
+      font-weight: 400;
+      margin-right: 0.5rem;
+    }
+
+    h3 {
+      font-family: var(--sans);
+      font-size: 1.1rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    /* Code blocks */
+    pre {
+      background-color: var(--code-bg);
+      color: var(--code-text);
+      padding: 1.5rem;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin: 2rem 0;
+      border-left: 4px solid #555;
+    }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.9em;
+      padding: 0.2em 0.4em;
+      background-color: var(--rule-light);
+    }
+    
+    pre code {
+      padding: 0;
+      background-color: transparent;
+    }
+
+    .comment { color: #888888; }
+    .keyword { color: #f5f5f5; font-weight: bold; }
+    .string { color: #cccccc; }
+
+    /* Diagrams */
+    .diagram-container {
+      margin: 3rem 0;
+      padding: 2rem;
+      border: 1px solid var(--rule-heavy);
+      background-color: var(--bg);
+      position: relative;
+    }
+
+    .diagram-container::before {
+      content: "FIGURE ANNEX";
+      position: absolute;
+      top: -10px;
+      left: 1rem;
+      background-color: var(--bg);
+      padding: 0 0.5rem;
+      font-family: var(--sans);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .diagram-caption {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      border-top: 1px dashed var(--strike);
+      padding-top: 0.5rem;
+      color: #333333;
+    }
+
+    /* Inline emphasis */
+    strong {
+      font-weight: 700;
+    }
+    
+    .aside-note {
+      float: right;
+      width: 30%;
+      margin: 0 0 1rem 1.5rem;
+      padding: 1rem;
+      border: 1px solid var(--rule-heavy);
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      line-height: 1.4;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(232, 232, 232, 0.5) 10px,
+        rgba(232, 232, 232, 0.5) 11px
+      );
+    }
+    
+    .candid-correction {
+      text-decoration: line-through;
+      color: var(--strike);
+    }
+
+    ul, ol {
+      margin-bottom: 1.5rem;
+      margin-left: 2rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .document-wrapper { padding: 2rem 1rem; }
+      .aside-note { float: none; width: 100%; margin: 1rem 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="document-wrapper">
+  
+  <header>
+    <div class="strike-bar"></div>
+    <span class="eyebrow">Retrofit & Remediation Report</span>
+    <h1>An Honest Cleanup of a Rough ML Deployment</h1>
+    <p class="deck">When evaluating a rudimentary Flask deployment for a marriage age prediction model, simply hitting "run" is not enough. The artifact demands editorial cleanup, explicit boundary-setting, and an unsparing assessment of what the system can—and absolutely cannot—claim to accomplish.</p>
+  </header>
+
+  <main>
+    <p class="drop-cap">We inherited an artifact that tells a common, unglamorous story. The repository arrived containing a baseline machine learning estimator, a scattering of unpinned dependencies, a notebook with raw install outputs bleeding into the markdown, and a rudimentary Flask application exposing a form. In the world of enterprise data science, nothing dates a project faster than visible junk text. When a reader sees raw pip install logs wedged between problem statements and architecture diagrams, they immediately stop trusting the narrative. There has clearly been no editorial cleanup, and by extension, one assumes no operational discipline.</p>
+
+    <p>Let us confront the artifact honestly. It is a model trained on a small, sparse dataset describing marriage ages against attributes like religion, height, and gender. The deployment surface is a thin HTML form submitting a POST request to a Flask route, which unpickles an estimator to return a single floating-point number. We are not looking at a high-availability microservice. We are looking at a <span class="candid-correction">state-of-the-art predictive solution</span> fragile, notebook-adjacent artifact dressed in web clothing.</p>
+
+    <p>This is not a polished success story. It is a rough deployment. But rough deployments are the reality of internal tooling. The value of this writeup lies not in pretending the artifact is a finished, production-grade system, but in walking through the retrofit. We will untangle the Flask routes, examine the prediction loop, and put up the necessary ethical guardrails that the original author forgot. A model that predicts a deeply personal life event based on crude demographic bucketing requires explicit constraints. It is an exercise in interface trust as much as in software engineering.</p>
+
+    <h2>The Form Submission Path</h2>
+    
+    <p>The application interface is ruthlessly simple. It consists of a static HTML template served by a Flask <code>home()</code> root route. A user encounters a web form with dropdowns and text inputs corresponding to the model's expected feature vector. The form lacks robust client-side validation, meaning the barrier to sending malformed data to the backend is practically nonexistent.</p>
+
+    <p>When the user clicks submit, the payload travels to the <code>/predict</code> route via a standard HTTP POST request. There is no asynchronous JavaScript fetching, no React state management. It is an old-school synchronous page reload. This architectural simplicity is actually a virtue when auditing a proof-of-concept. The cognitive load required to trace the data from the browser to the Python runtime is minimal.</p>
+
+<pre><code>from flask import Flask, request, render_template
+import pickle
+import numpy as np
+
+app = Flask(__name__)
+<span class="comment"># The artifact is unpickled at boot time.
+# WARNING: arbitrary code execution risk if the pickle file is tampered with.</span>
+model = pickle.load(open('marriage_age_predict_model.ml', 'rb'))
+
+@app.route('/')
+def home():
+    <span class="comment"># Renders the initial untouched form</span>
+    return render_template('index.html')
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    <span class="comment"># Blindly casting string inputs from the dict to integers/floats.
+    # No bounds checking. A 200-inch height will pass right through.</span>
+    input_features = [float(x) for x in request.form.values()]
+    features_value = [np.array(input_features)]
+    
+    prediction = model.predict(features_value)
+    output = round(prediction[0], 2)
+    
+    return render_template('index.html', prediction_text=f"Predicted Age: {output}")
+</code></pre>
+
+    <p>Look closely at the <code>predict()</code> function. It expects the keys from <code>request.form.values()</code> to arrive in the exact order the pickled model was trained on. This is a fragile contract. If a frontend developer rearranges the HTML form fields to make them look more aesthetically pleasing, the feature alignment silently breaks. A person's height might be accidentally fed into the gender feature, and the model will happily output a statistically meaningless prediction without crashing.</p>
+
+    <p>This is the first step of the retrofit: defining the route boundaries. A robust deployment must deserialize the payload using explicit keys, mapping them safely into an ordered feature array, catching cast errors, and returning graceful HTTP 400s when the inputs are logically incoherent.</p>
+
+    <h2>The Model Loading Loop</h2>
+    
+    <div class="aside-note">
+      <strong>On Pickling Models</strong><br>
+      Deserializing a pickle file from an untrusted source is equivalent to downloading an executable and running it as root. In a secure retrofit, you transition from <code>pickle</code> to formats like ONNX or at least assure the persistence layer belongs to a secure bucket.
+    </div>
+
+    <p>The model is loaded into memory when the Flask worker process starts. For a toy deployment running on a single local worker, <code>model = pickle.load(...)</code> globally is sufficient. However, scaling this logic implies the entire memory footprint of the model is duplicated for every worker process spawned by Gunicorn or uWSGI. In this case, the model is a tiny Scikit-Learn regressor, so memory is not the bottleneck. The bottleneck is dependency portability.</p>
+
+    <p>At the top of the repository's original Jupyter notebook, the raw console output of <code>pip install flask-cors</code> spills across the screen, complete with "Requirement already satisfied" spam. The original developer left the artifact tied to their local Anaconda distribution. In a repaired document, the first administrative task is tearing out this junk text and replacing it with a deterministic <code>requirements.txt</code> or <code>Pipfile</code>. Fastening the environment down ensures that when the Flask app spins up on a new server, the version of Scikit-Learn that deserializes the pickle exactly matches the version that wrote it. Failing to do this often results in inscrutable module-not-found errors deep within the Scikit-Learn tree.</p>
+
+    <h2>Visualizing the Prediction Boundary</h2>
+
+    <p>To repair this deployment mentally, we must visualize what actually happens when input hits the system, and crucially, what the system is giving back. The following diagram maps the synchronous lifecycle. It highlights not just the successful flow, but the boundary box of what the system actually knows.</p>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 800 350" preserveAspectRatio="xMidYMid meet">
+        <!-- SVG Definitions -->
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#111111" />
+          </marker>
+        </defs>
+
+        <!-- Lanes / Background -->
+        <rect x="20" y="20" width="180" height="310" fill="#f8f8f8" stroke="#e8e8e8" />
+        <text x="110" y="45" font-family="'IBM Plex Sans', sans-serif" font-weight="600" font-size="12" text-anchor="middle" letter-spacing="1">BROWSER</text>
+
+        <rect x="220" y="20" width="280" height="310" fill="#ffffff" stroke="#111111" stroke-width="2" />
+        <text x="360" y="45" font-family="'IBM Plex Sans', sans-serif" font-weight="600" font-size="12" text-anchor="middle" letter-spacing="1">FLASK RUNTIME</text>
+
+        <rect x="520" y="20" width="260" height="310" fill="#111111" />
+        <text x="650" y="45" fill="#ffffff" font-family="'IBM Plex Sans', sans-serif" font-weight="600" font-size="12" text-anchor="middle" letter-spacing="1">INFERENCE ARTIFACT</text>
+
+        <!-- Components Browser -->
+        <rect x="40" y="90" width="140" height="60" fill="#ffffff" stroke="#111111" />
+        <text x="110" y="115" font-family="'IBM Plex Sans', sans-serif" font-size="12" text-anchor="middle">HTML Form Data</text>
+        <text x="110" y="135" font-family="'IBM Plex Sans', sans-serif" font-size="10" fill="#555" text-anchor="middle">(No Validations)</text>
+
+        <rect x="40" y="220" width="140" height="60" fill="#ffffff" stroke="#111111" />
+        <text x="110" y="245" font-family="'IBM Plex Sans', sans-serif" font-size="12" text-anchor="middle">Rendered Response</text>
+        <text x="110" y="265" font-family="'IBM Plex Sans', sans-serif" font-size="10" fill="#555" text-anchor="middle">"Predicted Age: 27.4"</text>
+
+        <!-- Components Flask -->
+        <rect x="240" y="90" width="120" height="40" fill="#f8f8f8" stroke="#111111" />
+        <text x="300" y="115" font-family="'IBM Plex Sans', sans-serif" font-size="12" text-anchor="middle">/predict Route</text>
+
+        <rect x="360" y="140" width="120" height="40" fill="#ffffff" stroke="#555" stroke-dasharray="4" />
+        <text x="420" y="157" font-family="'IBM Plex Sans', sans-serif" font-size="10" text-anchor="middle">Type Casting</text>
+        <text x="420" y="171" font-family="'IBM Plex Sans', sans-serif" font-size="10" text-anchor="middle">(Fragile Arrays)</text>
+
+        <rect x="240" y="230" width="120" height="40" fill="#f8f8f8" stroke="#111111" />
+        <text x="300" y="255" font-family="'IBM Plex Sans', sans-serif" font-size="12" text-anchor="middle">Jinja2 Template</text>
+
+        <!-- Components Artifact -->
+        <rect x="550" y="145" width="200" height="110" fill="#333333" stroke="#ffffff" stroke-width="1.5" />
+        <text x="650" y="165" fill="#ffffff" font-family="'IBM Plex Sans', sans-serif" font-size="12" text-anchor="middle" font-weight="600">Model Boundary Box</text>
+        <line x1="560" y1="180" x2="740" y2="180" stroke="#888888" stroke-dasharray="2" />
+        <text x="650" y="200" fill="#dddddd" font-family="'IBM Plex Sans', sans-serif" font-size="11" text-anchor="middle">Unpickled Regressor</text>
+        <text x="650" y="220" fill="#aaaaaa" font-family="'IBM Plex Sans', sans-serif" font-size="10" font-style="italic" text-anchor="middle">Lacks causal logic</text>
+        <text x="650" y="235" fill="#aaaaaa" font-family="'IBM Plex Sans', sans-serif" font-size="10" font-style="italic" text-anchor="middle">Does not understand edge cases</text>
+
+        <!-- Arrows -->
+        <path d="M 180 120 L 230 120" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)" fill="none" />
+        <path d="M 300 130 L 300 160 L 350 160" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)" fill="none" />
+        <path d="M 480 160 L 510 160 L 510 200 L 540 200" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)" fill="none" />
+        <path d="M 550 240 L 480 240 L 480 250 L 370 250" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)" fill="none" />
+        <path d="M 240 250 L 190 250" stroke="#111111" stroke-width="1.5" marker-end="url(#arrow)" fill="none" />
+      </svg>
+      <div class="diagram-caption">
+        A submission-to-prediction storyboard of the Flask deployment. Explicit vulnerability boundaries surround the typing logic and the inference artifact itself, which passively accepts integers and returns floats regardless of societal plausibility.
+      </div>
+    </div>
+
+    <h2>Ethical Claims the Application Should Never Make</h2>
+
+    <p>Once the technical scaffolding is stabilized—routes checked, data validated, versions pinned—the harder part of the retrofit begins. We must write the instruction manual for what the system actually does, because absent a loud warning, users will assume the machine knows better than they do.</p>
+
+    <p>This is a model predicting marriage age. The features are rudimentary: gender, height, religion, caste, mother tongue. This is inherently sociological data subjected to mathematical minimization. The application's interface must not lie about the certainty of its output. A polished web interface returning a decimal like <code>27.42</code> projects a false aura of precision. It suggests an inevitability that simply does not exist.</p>
+
+    <p>In a true retrofit, the application must explicitly state:</p>
+    <ul>
+      <li><strong>This is a historical correlator, not a destiny engine.</strong> The model simply regurgitates the statistical mean of a biased, localized dataset from a specific temporal window. If society changes its attitudes toward marriage next year, the pickle file will not know.</li>
+      <li><strong>The output is a reflection of past norms.</strong> Entering a lower caste or a specific height and receiving a later marriage age is an echo of systemic societal patterns in the training data, not a biological or ordained delay. The interface must label the output with confidence intervals, or better yet, plain English warnings.</li>
+      <li><strong>Edge cases are treated as noise.</strong> Because it is a regression model minimizing mean squared error, it will fail spectacularly on outliers. It has no mechanism for "I don't know." The Flask route is designed to always return an answer, even if a user inputs an age of 145 and a height of 10 inches.</li>
+    </ul>
+
+    <p>Ultimately, a successful deployment of a toy model is not one that successfully tricks a user into thinking it is an Oracle. A successful retrofit is one that exposes the seams. By stripping the junk text from the repository, explicitly enforcing route contracts, and attaching severe disclaimers to the interface, we transition the project from a sloppy notebook export into a coherent, responsible demonstration of machine learning constraints.</p>
+
+  </main>
+</div>
+
+</body>
+</html>
