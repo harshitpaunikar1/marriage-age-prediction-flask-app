@@ -1,4 +1,4 @@
-# Project-16
+# Marriage Age Prediction Flask App
 Deployment of model for marriage year prediction (flask)
 `DEMO:https://youtu.be/wvh6BrohDNQ
 
